@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Menu from "./components/Menu";
 import Stacks from "./components/Stacks";
+import useBubbleSort from "./hooks/useBubbleSort";
 
 const s = {
   container: {
@@ -16,63 +17,50 @@ const s = {
   }
 };
 
-const range = [1, 300];
+const max = 300;
 
 const App = () => {
-  const [blockCount, setBlockCount] = useState(100);
+  const [blockCount, setBlockCount] = useState(20);
   const [numbers, setNumbers] = useState([]);
-  const [iter1, setIter1] = useState(0);
-  const [iter2, setIter2] = useState(0);
+  const [speed, setSpeed] = useState(0);
 
-  console.log("iter values", iter1, iter2);
-
-  useEffect(() => {
+  const generate = () => {
     let nums = [];
     for (let i = 0; i < blockCount; i++) {
-      nums.push(Math.ceil(Math.random() * 300));
+      nums.push(Math.ceil(Math.random() * max));
     }
     setNumbers(nums);
-  }, [blockCount]);
+  };
 
-  const runSort = () => {
-    console.log("Numbers", numbers);
-    console.log("running sort instance", iter1, iter2);
-    if (numbers[iter2] > numbers[iter2 + 1]) {
-      let nums = numbers;
-      [nums[iter2], nums[iter2 + 1]] = [nums[iter2 + 1], nums[iter2]];
-      console.log("New Numbers", nums);
-      setNumbers(nums);
-    } else {
-      setIter2(prev => prev + 1);
-    }
+  const reset = () => {
+    setNumbers([]);
+  };
+
+  const resetAndGenerate = () => {
+    reset();
+    generate();
   };
 
   useEffect(() => {
-    if (iter1 !== 0 || iter2 !== 0) {
-      console.log("numbers effect");
-      setIter2(prev => prev + 1);
+    if (blockCount <= 200) {
+      reset();
+      generate();
     }
-  }, [numbers]);
+  }, [blockCount]);
 
-  useEffect(() => {
-    if (iter2 !== 0) {
-      console.log("iteration 2 effect");
-      if (iter2 === numbers.length - iter1) {
-        // restart loop
-      } else {
-        console.log("next iteration starting in 1 sec");
-        setTimeout(() => {
-          runSort();
-        }, 1000);
-      }
-    }
-  }, [iter2]);
+  const [newNumbers, iter2, runBubbleSort] = useBubbleSort(numbers, speed);
 
   return (
     <div style={s.container}>
-      <Menu startSort={runSort} />
+      <Menu
+        startSort={() => runBubbleSort()}
+        generate={() => resetAndGenerate()}
+        stopSort={() => resetAndGenerate()}
+        setBlockCount={setBlockCount}
+        blockCount={blockCount}
+      />
       <div style={s.body}>
-        <Stacks count={blockCount} numbers={numbers} current={iter2} />
+        <Stacks count={blockCount} numbers={newNumbers} current={iter2} />
       </div>
     </div>
   );

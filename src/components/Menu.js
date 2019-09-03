@@ -11,20 +11,35 @@ const s = {
   },
   button: {
     height: "100%",
-    width: "50px",
+    padding: "0 16px",
     background: "#888",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#fff"
+    color: "#fff",
+    cursor: "pointer"
   }
 };
 
-const Menu = ({ startSort }) => (
+const Menu = ({ startSort, generate, stopSort, setBlockCount, blockCount }) => (
   <div style={s.container}>
-    <div>Block Count: 300</div>
+    <div>
+      Block Count:
+      <input
+        value={blockCount}
+        onChange={e => setBlockCount(e.target.value)}
+        type="number"
+        max="200"
+      />
+    </div>
     <div style={s.button} onClick={() => startSort()}>
       Sort
+    </div>
+    <div style={s.button} onClick={() => generate()}>
+      Generate
+    </div>
+    <div style={s.button} onClick={() => stopSort()}>
+      Stop
     </div>
   </div>
 );
