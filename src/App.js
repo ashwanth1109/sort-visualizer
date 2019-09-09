@@ -3,21 +3,7 @@ import React, { useState, useEffect } from "react";
 import Menu from "./components/Menu";
 import Stacks from "./components/Stacks";
 import useBubbleSort from "./hooks/useBubbleSort";
-
-const s = {
-  container: {
-    width: "100vw",
-    height: "100vh",
-    display: "flex",
-    flexDirection: "column"
-  },
-  body: {
-    flex: 1,
-    padding: "32px"
-  }
-};
-
-const max = 300;
+import { Container, Body } from "./styles";
 
 const App = () => {
   const [blockCount, setBlockCount] = useState(20);
@@ -27,7 +13,7 @@ const App = () => {
   const generate = () => {
     let nums = [];
     for (let i = 0; i < blockCount; i++) {
-      nums.push(Math.ceil(Math.random() * max));
+      nums.push(Math.ceil(Math.random() * 300));
     }
     setNumbers(nums);
   };
@@ -51,7 +37,7 @@ const App = () => {
   const [newNumbers, iter2, runBubbleSort] = useBubbleSort(numbers, speed);
 
   return (
-    <div style={s.container}>
+    <Container>
       <Menu
         startSort={() => runBubbleSort()}
         generate={() => resetAndGenerate()}
@@ -59,10 +45,10 @@ const App = () => {
         setBlockCount={setBlockCount}
         blockCount={blockCount}
       />
-      <div style={s.body}>
+      <Body>
         <Stacks count={blockCount} numbers={newNumbers} current={iter2} />
-      </div>
-    </div>
+      </Body>
+    </Container>
   );
 };
 
